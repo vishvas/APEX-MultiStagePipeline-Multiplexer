@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="prj1" default="jar">
+  <description>
+    Build file for simple arithmetic parser compiler.
+  </description>
+
+  <!-- ***** Global Property Definitions ***** -->
+  <property name="project" value="prj1"/>
+  <property name="src.dir" location="src"/>
+  <property name="main-java-src.dir" location="${src.dir}"/>
+  <property name="build.dir" location="build"/>
+  <property name="target.dir" location="target"/>
+  <property name="classes.dir" location="${build.dir}/classes"/>
+  <property name="doc.dir" location="doc"/>
+  <property name="api.dir" location="${doc.dir}/api"/>
+
+  <path id="lib.classpath">
+  </path>
+
+  <path id="compile.classpath">
+    <path refid="lib.classpath"/>
+    <pathelement location="${classes.dir}"/>
+  </path>
+
+  <path id="run.classpath">
+    <path refid="lib.classpath"/>
+    <pathelement location="${target.dir}/${project}.jar"/>
+  </path>
+
+  <target name="init">
+    <description>Creates directories.</description>
+    <mkdir dir="${classes.dir}"/>
+    <mkdir dir="${target.dir}"/>
+    <mkdir dir="${api.dir}"/>
+  </target>
+
+  <target name="compile" depends="init">
+    <description>Compiles all source code.</description>
+    <javac srcdir="${main-java-src.dir}" destdir="${classes.dir}" source="1.8" includeantruntime="false" debug="yes">
+       <classpath refid="compile.classpath"/>
+       <compilerarg value="-Xlint:unchecked"/>
+    </javac>
+    <!--
+    <copy todir="${classes.dir}">
+      <fileset dir="${main-resources.dir}" includes="**/*.properties"/>
+    </copy>
+    -->
+  </target> 
+
+  <target name="jar" depends="compile">
+    <description>Creates jar file.</description>
+    <jar destfile="${target.dir}/${project}.jar" compress="false" basedir="${classes.dir}">
+    </jar>
+  </target>
+
+  <target name="clean" depends="init">
+    <description>
+      Removes temporary directories and all compiled files.
+    </description>
+    <delete dir="${build.dir}"/>
+    <delete dir="${target.dir}"/>
+    <delete dir="${doc.dir}"/>
+    <delete file="${project}.tar.gz"/>
+  </target>
+
+  <target name="do-doc" depends="init">
+    <description>Produce documentation.</description>
+    <javadoc sourcepath="${main-java-src.dir}" destdir="${api.dir}" source="1.8" package="true" packagenames="edu.binghamton.cs572.ll.*">
+       <classpath refid="compile.classpath"/>
+    </javadoc>
+  </target> 
+
+  <target name="display">
+    <description>Ant debugging target to display ant vars.</description>
+    <property name="compile-classpath" refid="compile.classpath"/>
+    <property name="run-classpath" refid="run.classpath"/>
+    <echo>compile path is ${compile-classpath}</echo>
+    <echo>run path is ${run-classpath}</echo>
+    <echoproperties/>
+  </target>
+
+</project>
